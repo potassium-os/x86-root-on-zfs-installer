@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+systemctl enable getty@tty0.service
+systemctl enable generate-ssh-hostkeys.service
+systemctl enable ssh.service

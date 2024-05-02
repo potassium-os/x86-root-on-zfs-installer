@@ -1,0 +1,13 @@
+[Unit]
+Description=Fetch ssh authorized_keys file
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/fetch-ssh-key.sh
+RemainAfterExit=true
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

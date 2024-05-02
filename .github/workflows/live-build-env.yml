@@ -1,0 +1,23 @@
+name: Build Image using Containerfile
+on:
+  push:
+    tags:
+    - '*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Buildah Action
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: ghcr.io/potassium-os/debian-live-build-env
+        tags: latest ${{ github.sha }} ${{ github.tag }}
+        platforms: linux/amd64
+        containerfiles: |
+          ./debian-live/build-env/Containerfile

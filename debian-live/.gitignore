@@ -1,0 +1,3 @@
+# Debian-live build area
+debian-live/build/**
+debian-live/output/**

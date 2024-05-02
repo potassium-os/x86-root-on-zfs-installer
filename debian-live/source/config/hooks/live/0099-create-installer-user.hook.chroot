@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+# create a builder user
+addgroup \
+  --gid 1101 \
+  installer
+
+adduser \
+  --uid 1101 \
+  --ingroup installer \
+  --shell /bin/bash \
+  --comment "" \
+  installer
+
+echo "installer:potassium" | chpasswd
+
+usermod -a -G sudo installer
+
+echo "installer ALL=(ALL) NOPASSWD: ALL" | tee -a /etc/sudoers.d/installer
+
+mkdir -p /home/installer/.ssh
+
+chown installer:installer /home/installer/.ssh
