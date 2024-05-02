@@ -19,19 +19,6 @@ jobs:
     - name: Upload output
       uses: actions/upload-artifact@v4
       with:
-        name: livecd-output
+        name: output
         path: |
-          ./debian-live/output/info/binary.modified_timestamps
-          ./debian-live/output/info/build.log
-          ./debian-live/output/info/chroot.files
-          ./debian-live/output/info/chroot.packages.install
-          ./debian-live/output/info/chroot.packages.live
-          ./debian-live/output/iso/live-image-amd64.contents
-          ./debian-live/output/iso/live-image-amd64.files
-          ./debian-live/output/iso/live-image-amd64.hybrid.iso
-          ./debian-live/output/iso/live-image-amd64.packages
-          ./debian-live/output/boot/chroot/boot"/*
-          ./debian-live/output/live/binary/live/filesystem.squashfs
-          ./debian-live/output/live/binary/live/filesystem.packages
-          ./debian-live/output/live/binary/live/initrd.img"
-          ./debian-live/output/live/binary/live/vmlinuz"
+          ./debian-live/output/

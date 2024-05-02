@@ -29,11 +29,7 @@ BUILD_ID=$(date --utc +%Y%m%d_%H%M%SZ)
 
 BUILD_DIR="${TOP_DIR}/build/${BUILD_ID}"
 
-if [ -n "${CI}" ]; then
-  OUTPUT_DIR="${TOP_DIR}/output/"
-else
-  OUTPUT_DIR="${TOP_DIR}/output/${BUILD_ID}"
-fi
+OUTPUT_DIR="${TOP_DIR}/output/"
 
 mkdir -p "${BUILD_DIR}"
 
@@ -55,17 +51,14 @@ sudo podman run \
 
 mkdir -p "${OUTPUT_DIR}"/{info,iso,boot,live}
 
-cp -v  "${BUILD_DIR}/binary.modified_timestamps"      "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/build.log"                       "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/chroot.files"                    "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/chroot.packages.install"         "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/chroot.packages.live"            "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/live-image-amd64.contents"       "${OUTPUT_DIR}/iso/"
-cp -v  "${BUILD_DIR}/live-image-amd64.files"          "${OUTPUT_DIR}/iso/"
-cp -v  "${BUILD_DIR}/live-image-amd64.hybrid.iso"     "${OUTPUT_DIR}/iso/"
-cp -v  "${BUILD_DIR}/live-image-amd64.packages"       "${OUTPUT_DIR}/iso/"
-cp -Rv "${BUILD_DIR}/chroot/boot"/**                  "${OUTPUT_DIR}/boot"
-cp -v  "${BUILD_DIR}/binary/live/filesystem.squashfs" "${OUTPUT_DIR}/live"
-cp -v  "${BUILD_DIR}/binary/live/filesystem.packages" "${OUTPUT_DIR}/live"
-cp -v  "${BUILD_DIR}/binary/live/initrd.img"*         "${OUTPUT_DIR}/live"
-cp -v  "${BUILD_DIR}/binary/live/vmlinuz"*            "${OUTPUT_DIR}/live"
+cp -v  "${BUILD_DIR}/binary.modified_timestamps"  "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/build.log"                   "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/chroot.files"                "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/chroot.packages.install"     "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/chroot.packages.live"        "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/live-image-amd64.contents"   "${OUTPUT_DIR}/iso/"
+cp -v  "${BUILD_DIR}/live-image-amd64.files"      "${OUTPUT_DIR}/iso/"
+cp -v  "${BUILD_DIR}/live-image-amd64.hybrid.iso" "${OUTPUT_DIR}/iso/"
+cp -v  "${BUILD_DIR}/live-image-amd64.packages"   "${OUTPUT_DIR}/iso/"
+cp -Rv "${BUILD_DIR}/chroot/boot"                 "${OUTPUT_DIR}/boot"
+cp -Rv "${BUILD_DIR}/binary/live"                 "${OUTPUT_DIR}/live"
