@@ -10,7 +10,7 @@ LB_BINARY_FILESYSTEM="ext4"
 LB_APT_INDICES="false"
 
 # Set boot parameters
-LB_BOOTAPPEND_LIVE="boot=live persistence components hostname=potassium-os-installer"
+LB_BOOTAPPEND_LIVE="boot=live persistence components hostname=potassium-os-installer SSH_KEY_URL="
 
 # Set boot parameters
 LB_BOOTAPPEND_INSTALL=""
