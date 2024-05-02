@@ -5,6 +5,13 @@ on:
     - '*'
   workflow_dispatch:
 
+env:
+  IMAGE_NAME: debian-live-build-env
+  IMAGE_TAGS: latest ${{ github.sha }} ${{ github.tag }}
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  REGISTRY_USER: ${{ github.actor }}
+  REGISTRY_PASSWORD: ${{ github.token }}
+
 jobs:
   build:
     name: Build image
@@ -13,11 +20,24 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Buildah Action
+    - name: Build Image
+      id: build_image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: ghcr.io/potassium-os/debian-live-build-env
-        tags: latest ${{ github.sha }} ${{ github.tag }}
+        image: ${{ env.IMAGE_NAME }}
+        tags: ${{ env.IMAGE_TAGS }}
         platforms: linux/amd64
         containerfiles: |
           ./debian-live/build-env/Containerfile
+
+    - name: Push To GHCR
+      id: push_image
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build_image.outputs.image }}
+        tags: ${{ steps.build_image.outputs.tags }}
+        registry: ${{ env.IMAGE_REGISTRY }}
+        username: ${{ env.REGISTRY_USER }}
+        password: ${{ env.REGISTRY_PASSWORD }}
+        extra-args: |
+          --disable-content-trust

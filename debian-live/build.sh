@@ -38,13 +38,14 @@ fi
 mkdir -p "${BUILD_DIR}"
 
 sudo podman run \
+  --pull=missing \
   --rm \
   --privileged \
   -v "${TOP_DIR}:/opt/live:rbind,dev,suid" \
   -v "/dev/null:/dev/null:rbind,dev,suid" \
   -e BUILD_DIR="/opt/live/build/${BUILD_ID}" \
   -e SOURCE_DIR="/opt/live/source" \
-  "localhost/local/debian-live-build-env:dev" \
+  "ghcr.io/potassium-os/debian-live-build-env:latest" \
     /bin/bash -c "set -exu \
       && rm -rf \${BUILD_DIR} \
       && cp -Rv \${SOURCE_DIR} \${BUILD_DIR} \
