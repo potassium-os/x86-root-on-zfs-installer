@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script is run by fetch-ssh-key.service at boot as root
+
 function _main () {
   _log "--- start fetch-ssh-key.sh at $(date) ---"
 

@@ -12,3 +12,6 @@ dnsutils
 net-tools
 dbus
 ca-certificates
+
+grub-efi-amd64-bin
+grub-pc-bin

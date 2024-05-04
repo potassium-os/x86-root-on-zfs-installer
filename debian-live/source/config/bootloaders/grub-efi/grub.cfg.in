@@ -1,3 +1,0 @@
-serial --unit=0 --speed=9600 --dumb
-terminal_input serial
-terminal_output serial
