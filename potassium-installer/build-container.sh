@@ -18,15 +18,11 @@ then
   SCRIPT_DIR=$(cd "$DIRNAME" || exit 1; pwd)
 fi
 
+# debian-live directory
 DEFAULT_TOP_DIR=$(dirname "${SCRIPT_DIR}/../.")
 DEFAULT_TOP_DIR=$(cd "$DEFAULT_TOP_DIR" || exit 1; pwd)
 TOP_DIR="${TOP_DIR:-$DEFAULT_TOP_DIR}"
 
-sudo podman run \
-  --rm \
-  -it \
-  --privileged \
-  -v "${TOP_DIR}:/opt/live:rbind,dev,suid" \
-  -v "/dev/null:/dev/null:rbind,dev,suid" \
-  "localhost/debian-live-build-env:dev" \
-    /bin/bash -c "${@}"
+cd "${TOP_DIR}/build-env"
+
+sudo podman build --tag localhost/potassium-x86-root-on-zfs-installer:dev .

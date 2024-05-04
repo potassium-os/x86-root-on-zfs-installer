@@ -28,5 +28,5 @@ sudo podman run \
   --privileged \
   -v "${TOP_DIR}:/opt/live:rbind,dev,suid" \
   -v "/dev/null:/dev/null:rbind,dev,suid" \
-  "localhost/debian-live-build-env:dev" \
+  "localhost/potassium-x86-root-on-zfs-installer:dev" \
     /bin/bash -c "${@}"

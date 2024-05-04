@@ -10,13 +10,13 @@ LB_BINARY_FILESYSTEM="ext4"
 LB_APT_INDICES="false"
 
 # Set boot parameters
-LB_BOOTAPPEND_LIVE="boot=live persistence components hostname=potassium-os-installer SSH_KEY_URL="
+LB_BOOTAPPEND_LIVE="console=tty0 console=ttyS0,115200 console=ttyS1,115200 noautologin live-config.username=installer components boot=live hostname=potassium-installer SSH_KEY_URL= CONF_URL= "
 
 # Set boot parameters
 LB_BOOTAPPEND_INSTALL=""
 
 # Set boot parameters
-LB_BOOTAPPEND_LIVE_FAILSAFE="boot=live components memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788"
+LB_BOOTAPPEND_LIVE_FAILSAFE="boot=live components memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788 console=tty0 console=ttyS0,115200 console=ttyS1,115200"
 
 # Set BIOS bootloader
 LB_BOOTLOADER_BIOS=""
@@ -95,7 +95,7 @@ LB_LOADLIN="false"
 LB_WIN32_LOADER="false"
 
 # Set net tarball
-LB_NET_TARBALL="true"
+LB_NET_TARBALL="false"
 
 # Set onie
 LB_ONIE="false"
@@ -113,7 +113,7 @@ LB_FIRMWARE_CHROOT="false"
 LB_SWAP_FILE_PATH=""
 
 # Set swap file size
-LB_SWAP_FILE_SIZE="512"
+LB_SWAP_FILE_SIZE="0"
 
 # Enable/disable UEFI secure boot support
-LB_UEFI_SECURE_BOOT="disable"
+LB_UEFI_SECURE_BOOT="auto"

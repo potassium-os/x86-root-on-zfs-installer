@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+systemctl daemon-reload
+systemctl enable getty@tty1.service
+systemctl enable getty@tty2.service
+systemctl enable serial-getty@ttyS0.service
+systemctl enable serial-getty@ttyS1.service
+systemctl enable generate-ssh-hostkeys.service
+systemctl enable ssh.service
+
+systemctl enable fetch-ssh-key.service

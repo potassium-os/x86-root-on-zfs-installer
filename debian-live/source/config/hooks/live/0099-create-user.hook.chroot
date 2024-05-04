@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+# create an installer user
+addgroup \
+  --gid 1101 \
+  installer
+
+adduser \
+  --uid 1101 \
+  --ingroup installer \
+  --shell /bin/bash \
+  --comment "" \
+  --gecos "" \
+  installer
+
+echo "installer:potassium" | chpasswd
+
+usermod -a -G sudo installer
+
+echo "installer ALL=(ALL) NOPASSWD: ALL" | tee -a /etc/sudoers.d/installer
+
+mkdir -p /home/installer/.ssh
+
+cat <<'EOF' >> /home/installer/.bashrc
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+if [ -z "$DISPLAY" ] && [[ $(tty) = "/dev/tty1" || $(tty) = "/dev/ttyS0" ]]; then
+  echo "Login on tty1 or ttyS0, starting installer" | tee -a "${HOME}/installer.log" | sudo tee /dev/kmesg
+  sleep 2
+  /usr/local/bin/potassium-installer.sh
+fi
+
+EOF
+
+chown -R installer:installer /home/installer

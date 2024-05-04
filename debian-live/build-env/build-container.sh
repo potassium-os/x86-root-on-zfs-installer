@@ -25,4 +25,4 @@ TOP_DIR="${TOP_DIR:-$DEFAULT_TOP_DIR}"
 
 cd "${TOP_DIR}/build-env"
 
-sudo podman build --tag local/debian-live-build-env:dev .
+sudo podman build --tag localhost/debian-live-build-env:dev .

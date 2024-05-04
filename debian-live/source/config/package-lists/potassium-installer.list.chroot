@@ -1,2 +1,4 @@
 bash
-podman
+curl
+sudo
+nano 

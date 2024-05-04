@@ -37,28 +37,27 @@ sudo podman run \
   --pull=missing \
   --rm \
   --privileged \
-  -v "${TOP_DIR}:/opt/live:rbind,dev,suid" \
-  -v "/dev/null:/dev/null:rbind,dev,suid" \
+  -v "${TOP_DIR}:/opt/live:rw,rbind,dev,suid,exec" \
+  -v "/dev/null:/dev/null:rw,rbind,dev,suid,exec" \
   -e BUILD_DIR="/opt/live/build/${BUILD_ID}" \
   -e SOURCE_DIR="/opt/live/source" \
+  -e "DEBUG=true" \
+  -e "VERBOSE=true" \
   "ghcr.io/potassium-os/debian-live-build-env:latest" \
     /bin/bash -c "set -exu \
       && rm -rf \${BUILD_DIR} \
       && cp -Rv \${SOURCE_DIR} \${BUILD_DIR} \
       && cd \${BUILD_DIR} \
-      && lb build 2>&1 | tee -a build.log \
-      "
+      && lb build 2>&1 | tee -a build.log || exit 1 \
+      " || exit 1
 
 mkdir -p "${OUTPUT_DIR}"/{info,iso,boot,live}
 
-cp -v  "${BUILD_DIR}/binary.modified_timestamps"  "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/build.log"                   "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/chroot.files"                "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/chroot.packages.install"     "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/chroot.packages.live"        "${OUTPUT_DIR}/info/"
-cp -v  "${BUILD_DIR}/live-image-amd64.contents"   "${OUTPUT_DIR}/iso/"
-cp -v  "${BUILD_DIR}/live-image-amd64.files"      "${OUTPUT_DIR}/iso/"
-cp -v  "${BUILD_DIR}/live-image-amd64.hybrid.iso" "${OUTPUT_DIR}/iso/"
-cp -v  "${BUILD_DIR}/live-image-amd64.packages"   "${OUTPUT_DIR}/iso/"
-cp -Rv "${BUILD_DIR}/chroot/boot"                 "${OUTPUT_DIR}/boot"
-cp -Rv "${BUILD_DIR}/binary/live"                 "${OUTPUT_DIR}/live"
+cp -v  "${BUILD_DIR}/binary.modified_timestamps" "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/build.log"                  "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/chroot.files"               "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/chroot.packages.install"    "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/chroot.packages.live"       "${OUTPUT_DIR}/info/"
+cp -v  "${BUILD_DIR}/live-image-amd64"*          "${OUTPUT_DIR}/iso/"
+cp -Rv "${BUILD_DIR}/chroot/boot"                "${OUTPUT_DIR}/boot"
+cp -Rv "${BUILD_DIR}/binary/live"                "${OUTPUT_DIR}/live"

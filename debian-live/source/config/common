@@ -19,7 +19,7 @@ LB_APT_RECOMMENDS="false"
 LB_APT_SECURE="true"
 
 # Set apt/aptitude source entries in sources.list
-LB_APT_SOURCE_ARCHIVES="true"
+LB_APT_SOURCE_ARCHIVES="false"
 
 # Control cache
 LB_CACHE="false"
@@ -73,7 +73,7 @@ DEBOOTSTRAP_SCRIPT=""
 GZIP_OPTIONS="-6 --rsyncable"
 
 # Enable UTC timestamps
-LB_UTC_TIME="false"
+LB_UTC_TIME="true"
 
 # live-build options
 
