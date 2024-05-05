@@ -27,19 +27,9 @@ function _main () {
   # shellcheck source=common.sh
   . "${TOP_DIR}/potassium/common.sh"
 
-  # Ensure we have sudo
-  _log "Testing sudo"
-  _log "Output from \"sudo -E id\": $(SUDO_ASKPASS=/bin/false sudo -EA id 2>&1)"
-
-  if sudo -E true; then
-    _log "User has sudo, proceeding"
-  else
-    _log "User does not have sudo, exiting"
-    exit 127
-  fi
-
-  # Ensure apt/dpkg don't try to spawn a tui
-  export DEBIAN_FRONTEND="noninteractive"
+  mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | \
+      xargs -i{} sudo -E umount -lf {}
+  sudo -E zpool export -a
 }
 
 # Call main() to start the script

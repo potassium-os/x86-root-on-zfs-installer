@@ -27,27 +27,17 @@ function _main () {
   . "${TOP_DIR}/potassium/common.sh"
 
   clear
-  printf '\n\n%s\n\n' "${LOGO}"
-  read -rp "  Press enter to continue"
+  printf '\n\n\n%s\n\n\n' "${LOGO}"
+  read -rp "  Press enter to continue, SIGINT to exit."
   
   # Install steps (in order)
-  INSTALL_STEPS=("prerequs" "load-installer-config" "build-zfs-kmod" "make-zfs-pools" "debootstrap-system" "chroot" "finalize")
-  INSTALL_SKIP_STEPS="${INSTALL_SKIP_STEPS:-()}"
-  SKIP_STEPS=()
-  IFS=' ' read -r -a SKIP_STEPS <<< "${INSTALL_SKIP_STEPS}"
-
+  INSTALL_STEPS=( "prerequs" "load-installer-config" "make-zfs-pools" "debootstrap-system" "chroot-system-setup" "finalize-system" )
   # run each installation step
   for STEP in "${INSTALL_STEPS[@]}"; do
-    # if current step is NOT in INSTALL_SKIP_STEPS
-    # shellcheck disable=SC2076
-    if ! [[ " ${SKIP_STEPS[*]} " =~ " ${STEP} " ]]; then
-      # run the step
-      _log "About to run ${TOP_DIR}/potassium/${STEP}.sh"
-      # shellcheck source=/dev/null
-      . "${TOP_DIR}/potassium/${STEP}.sh"
-    else
-      _log "Skipping install step: ${STEP}"
-    fi
+    # run the step
+    _log "About to run ${TOP_DIR}/potassium/${STEP}.sh"
+    # shellcheck source=/dev/null
+    . "${TOP_DIR}/potassium/${STEP}.sh"
   done
 }
 
@@ -67,6 +57,7 @@ LOGO=$(cat <<END
   ║                            ║  
   ║                            ║  
   ╚════════════════════════════╝  
+
   Potassium
   root-on-zfs installer v0.0.1
 

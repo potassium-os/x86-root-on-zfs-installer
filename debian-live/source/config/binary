@@ -19,7 +19,7 @@ LB_BOOTAPPEND_INSTALL=""
 LB_BOOTAPPEND_LIVE_FAILSAFE="boot=live components memtest noapic noapm nodma nomce nolapic nosmp nosplash vga=788 console=tty0 console=ttyS0,115200 console=ttyS1,115200"
 
 # Set BIOS bootloader
-LB_BOOTLOADER_BIOS=""
+LB_BOOTLOADER_BIOS="grub-pc"
 
 # Set EFI bootloader
 LB_BOOTLOADER_EFI="grub-efi"
@@ -31,7 +31,7 @@ LB_BOOTLOADERS="grub-efi"
 LB_CHECKSUMS="sha256 md5"
 
 # Set compression
-LB_COMPRESSION="gzip"
+LB_COMPRESSION="bzip2"
 
 # Support dm-verity on rootfs
 LB_DM_VERITY=""

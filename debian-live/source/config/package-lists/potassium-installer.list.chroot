@@ -3,3 +3,14 @@ curl
 sudo
 nano 
 jq
+yq
+gettext
+screen
+linux-image-amd64
+linux-headers-amd64
+
+zfs-dkms
+zfsutils-linux
+
+debootstrap
+gdisk

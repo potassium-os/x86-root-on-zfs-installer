@@ -22,6 +22,11 @@ DEFAULT_TOP_DIR=$(dirname "${SCRIPT_DIR}/.")
 DEFAULT_TOP_DIR=$(cd "$DEFAULT_TOP_DIR" || exit 1; pwd)
 TOP_DIR="${TOP_DIR:-$DEFAULT_TOP_DIR}"
 
+cd "${TOP_DIR}" || exit 1
+
+rm -rf "${TOP_DIR}/debian-live/output/"**
+sudo rm -rf "${TOP_DIR}/debian-live/build/"**
+
 # shellcheck disable=SC2018
 #BUILD_ID=$(tr -dc a-z </dev/urandom | head -c 8; echo)
 
@@ -51,9 +56,9 @@ sudo podman run \
       && mkdir -p \${BUILD_DIR}/config/includes.chroot_after_packages/usr/local/bin/ \
       && cp -Rv \${APP_SRC_DIR}/* \${BUILD_DIR}/config/includes.chroot_after_packages/usr/local/bin/ || exit 1 \
       && cd \${BUILD_DIR} \
-      && export MKSQUASHFS_OPTIONS=\" -no-recovery -always-use-fragments -b 1048576\" \
+      && export MKSQUASHFS_OPTIONS=\" -no-recovery -always-use-fragments \" \
       && lb build 2>&1 | tee -a build.log \
-      "
+  "
 
 mkdir -p "${OUTPUT_DIR}"/{info,iso,boot,live}
 

@@ -27,7 +27,6 @@ function _main () {
   # shellcheck source=common.sh
   . "${TOP_DIR}/potassium/common.sh"
 
-
   #
   # Setup CONF_URL
 
@@ -56,12 +55,16 @@ function _main () {
   fi
 
   # Fetch configuration from CONF_URL
-  CONF_YAML=$(curl -s "${CONF_URL}" | tee "${HOME}/potassium-installer-config.yml")
-  if [ -n "${CONF_YAML}" ]; then
-    echo "${CONF_YAML}" | _log
-    export CONF_YAML
+  INSTALLER_CONF_YAML=$(curl -s "${CONF_URL}")
+
+  echo "${INSTALLER_CONF_YAML}" | tee "${HOME}/potassium-installer-config.yml" | _log
+  if [ -n "${INSTALLER_CONF_YAML}" ]; then
+    _log "Loaded config sucessfully:\n\n"
+    _log "${INSTALLER_CONF_YAML}"
+    _log "\n\n"
+    export INSTALLER_CONF_YAML
   else
-    _log "CONF_YAML appears to be empty, cannot continue"
+    _log "INSTALLER_CONF_YAML appears to be empty, cannot continue"
     exit 128
   fi
 }

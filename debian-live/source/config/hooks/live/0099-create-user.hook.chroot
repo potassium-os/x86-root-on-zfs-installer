@@ -33,11 +33,34 @@ case $- in
 esac
 
 if [ -z "$DISPLAY" ] && [[ $(tty) = "/dev/tty1" || $(tty) = "/dev/ttyS0" ]]; then
-  echo "Login on tty1 or ttyS0, starting installer" | tee -a "${HOME}/installer.log" | sudo tee /dev/kmesg
-  echo "SIGINT in the next 5 seconds to cancel..."
-  sleep 5
-  /bin/bash /usr/local/bin/potassium-installer.sh
+  echo "Login on $(tty), starting installer" | tee -a "${HOME}/installer.log" | sudo tee /dev/kmesg
+  screen -S potassium-installer "/usr/local/bin/potassium-installer.sh"
+else
+  echo "You logged in on $(tty), so we didn't start the installer for you (that only happens on tty1 and ttyS0)."
+  echo "Feel free to look around, fix things, etc., and when you're ready, start the installer with"
+  echo "screen -S potassium-installer \"/bin/bash /usr/local/bin/potassium-installer.sh\""
 fi
+
+EOF
+
+cat <<'EOF' >> /home/installer/.screenrc
+
+# Enable mouse scrolling and scroll bar history scrolling
+termcapinfo xterm* ti@:te@
+
+# Make the scrollback longer
+defscrollback 200000
+
+# Moar colorcodes
+term screen-256color
+
+startup_message off
+
+vbell off
+
+rendition so =00
+caption string "%{03} "
+altscreen on
 
 EOF
 
