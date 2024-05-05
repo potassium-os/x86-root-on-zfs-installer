@@ -34,8 +34,9 @@ esac
 
 if [ -z "$DISPLAY" ] && [[ $(tty) = "/dev/tty1" || $(tty) = "/dev/ttyS0" ]]; then
   echo "Login on tty1 or ttyS0, starting installer" | tee -a "${HOME}/installer.log" | sudo tee /dev/kmesg
-  sleep 2
-  /usr/local/bin/potassium-installer.sh
+  echo "SIGINT in the next 5 seconds to cancel..."
+  sleep 5
+  /bin/bash /usr/local/bin/potassium-installer.sh
 fi
 
 EOF

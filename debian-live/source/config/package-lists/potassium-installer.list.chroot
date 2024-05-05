@@ -2,3 +2,4 @@ bash
 curl
 sudo
 nano 
+jq

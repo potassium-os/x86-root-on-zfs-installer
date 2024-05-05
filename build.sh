@@ -27,9 +27,9 @@ TOP_DIR="${TOP_DIR:-$DEFAULT_TOP_DIR}"
 
 BUILD_ID=$(date --utc +%Y%m%d_%H%M%SZ)
 
-BUILD_DIR="${TOP_DIR}/build/${BUILD_ID}"
+BUILD_DIR="${TOP_DIR}/debian-live/build/${BUILD_ID}"
 
-OUTPUT_DIR="${TOP_DIR}/output/"
+OUTPUT_DIR="${TOP_DIR}/debian-live/output/"
 
 mkdir -p "${BUILD_DIR}"
 
@@ -37,19 +37,23 @@ sudo podman run \
   --pull=missing \
   --rm \
   --privileged \
-  -v "${TOP_DIR}:/opt/live:rw,rbind,dev,suid,exec" \
+  -v "${TOP_DIR}:/opt/build:rw,rbind,dev,suid,exec" \
   -v "/dev/null:/dev/null:rw,rbind,dev,suid,exec" \
-  -e BUILD_DIR="/opt/live/build/${BUILD_ID}" \
-  -e SOURCE_DIR="/opt/live/source" \
+  -e BUILD_DIR="/opt/build/debian-live/build/${BUILD_ID}" \
+  -e SOURCE_DIR="/opt/build/debian-live/source" \
+  -e APP_SRC_DIR="/opt/build/installer" \
   -e "DEBUG=true" \
   -e "VERBOSE=true" \
   "ghcr.io/potassium-os/debian-live-build-env:latest" \
     /bin/bash -c "set -exu \
       && rm -rf \${BUILD_DIR} \
       && cp -Rv \${SOURCE_DIR} \${BUILD_DIR} \
+      && mkdir -p \${BUILD_DIR}/config/includes.chroot_after_packages/usr/local/bin/ \
+      && cp -Rv \${APP_SRC_DIR}/* \${BUILD_DIR}/config/includes.chroot_after_packages/usr/local/bin/ || exit 1 \
       && cd \${BUILD_DIR} \
-      && lb build 2>&1 | tee -a build.log || exit 1 \
-      " || exit 1
+      && export MKSQUASHFS_OPTIONS=\" -no-recovery -always-use-fragments -b 1048576\" \
+      && lb build 2>&1 | tee -a build.log \
+      "
 
 mkdir -p "${OUTPUT_DIR}"/{info,iso,boot,live}
 
