@@ -228,10 +228,10 @@ EOF
       systemctl enable zfs-import-bpool.service
       ln -s /usr/share/systemd/tmp.mount /etc/systemd/system/
       systemctl enable tmp.mount
-      ln -s /usr/lib/zfs-linux/zed.d/history_event-zfs-list-cacher.sh /etc/zfs/zed.d
-      cp /etc/zfs/zed.d/zed-functions.sh.dpkg-new /etc/zfs/zed.d/zed-functions.sh
+      ln -sf /usr/lib/zfs-linux/zed.d/history_event-zfs-list-cacher.sh /etc/zfs/zed.d
+      cp /etc/zfs/zed.d/zed-functions.sh.dpkg-new /etc/zfs/zed.d/zed-functions.sh || true
       chmod +x /etc/zfs/zed.d/zed-functions.sh
-      cp /etc/zfs/zed.d/zed.rc /etc/zfs/zed.d/zed.rc
+      cp /etc/zfs/zed.d/zed.rc /etc/zfs/zed.d/zed.rc || true
       mkdir /etc/zfs/zfs-list.cache
       touch /etc/zfs/zfs-list.cache/bpool
       touch /etc/zfs/zfs-list.cache/rpool
