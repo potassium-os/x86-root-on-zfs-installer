@@ -15,3 +15,5 @@ ca-certificates
 
 grub-efi-amd64-bin
 grub-pc-bin
+
+chrony

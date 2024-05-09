@@ -87,16 +87,14 @@ EOF
 
   cat <<'EOF' | sudo tee /mnt/etc/apt/sources.list.d/debian.sources > /dev/null
 Types: deb
-# http://snapshot.debian.org/archive/debian/20240423T150000Z
 URIs: http://deb.debian.org/debian
-Suites: bookworm bookworm-updates
+Suites: trixie trixie-updates trixie-backports
 Components: main contrib non-free
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
 Types: deb
-# http://snapshot.debian.org/archive/debian-security/20240423T150000Z
 URIs: http://deb.debian.org/debian-security
-Suites: bookworm-security
+Suites: trixie-security
 Components: main contrib non-free
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 EOF
@@ -147,7 +145,6 @@ ExecStartPost=-/bin/mv /etc/zfs/preboot_zpool.cache /etc/zfs/zpool.cache
 WantedBy=zfs-import.target
 EOF
 
-
   sudo mount --make-private --rbind /dev  /mnt/dev
   sudo mount --make-private --rbind /proc /mnt/proc
   sudo mount --make-private --rbind /sys  /mnt/sys
@@ -195,7 +192,8 @@ EOF
         less \
         tree \
         linux-image-amd64 \
-        linux-headers-amd64
+        linux-headers-amd64 \
+        initramfs-tools
     ' || exit 121 | _log
 
   sudo chroot \
@@ -206,6 +204,7 @@ EOF
       apt-get -yq update
       apt-get -yq install \
         zfs-initramfs \
+        zfs-dkms \
         zfsutils-linux
     ' || exit 122 | _log
 
@@ -221,14 +220,6 @@ EOF
 
   sudo chroot \
     /mnt \
-    /bin/bash -c '
-      set -exu
-      export DEBIAN_FRONTEND=noninteractive
-      update-initramfs -cvk all
-    ' || exit 124 | _log
-
-  sudo chroot \
-    /mnt \
     /usr/bin/env \
       ROOT_PASSWORD="${ROOT_PASSWORD}" \
     /bin/bash -c '
@@ -237,6 +228,10 @@ EOF
       systemctl enable zfs-import-bpool.service
       ln -s /usr/share/systemd/tmp.mount /etc/systemd/system/
       systemctl enable tmp.mount
+      ln -s /usr/lib/zfs-linux/zed.d/history_event-zfs-list-cacher.sh /etc/zfs/zed.d
+      cp /etc/zfs/zed.d/zed-functions.sh.dpkg-new /etc/zfs/zed.d/zed-functions.sh
+      chmod +x /etc/zfs/zed.d/zed-functions.sh
+      cp /etc/zfs/zed.d/zed.rc /etc/zfs/zed.d/zed.rc
       mkdir /etc/zfs/zfs-list.cache
       touch /etc/zfs/zfs-list.cache/bpool
       touch /etc/zfs/zfs-list.cache/rpool
@@ -275,10 +270,23 @@ EOF
       /bin/bash -c '/usr/sbin/grub-install --target=x86_64-efi --efi-directory="/boot/efi-${i}" --bootloader-id="debian-${i}" --recheck --no-floppy'
   done
 
+  cat <<'EOF' | sudo tee /mnt/etc/modules-load.d/zfs.conf > /dev/null
+zfs
+zstd
+EOF
+
+  cat <<'EOF' | sudo tee -a /mnt/etc/initramfs-tools/modules > /dev/null
+zfs
+zstd
+EOF
+
   sudo chroot \
     /mnt \
     /bin/bash -c '
       set -exu
+      export DEBIAN_FRONTEND=noninteractive
+      echo REMAKE_INITRD=yes > /etc/dkms/zfs.conf
+      update-initramfs -cvk all
       update-grub
       efibootmgr -v
       tree /boot    
