@@ -1,0 +1,18 @@
+---
+
+# Hostname to set
+hostname: "potassium-os"
+
+root_password: "potassium"
+
+ssh_pubkey: "ssh-rsa <snip>"
+
+kernel_cmdline: " console=tty0 console=ttyS0,115200 console=ttyS1,115200 "
+
+# Define disks to use in zpools for rpool/bpool
+# Only mirroring layouts are supported for now
+zpool_disks:
+  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0
+  - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
+
+zpool_layout: "mirror"

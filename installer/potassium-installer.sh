@@ -31,6 +31,7 @@ function _main () {
   read -rp "  Press enter to continue, SIGINT to exit."
   
   # Install steps (in order)
+  # "finalize-system"
   INSTALL_STEPS=( "prerequs" "load-installer-config" "make-zfs-pools" "debootstrap-system" "chroot-system-setup" "finalize-system" )
   # run each installation step
   for STEP in "${INSTALL_STEPS[@]}"; do
@@ -59,7 +60,7 @@ LOGO=$(cat <<END
   ╚════════════════════════════╝  
 
   Potassium
-  root-on-zfs installer v0.0.1
+  root-on-zfs installer v1.1.0-rc0
 
 END
 )

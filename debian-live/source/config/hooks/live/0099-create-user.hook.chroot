@@ -34,7 +34,7 @@ esac
 
 if [ -z "$DISPLAY" ] && [[ $(tty) = "/dev/tty1" || $(tty) = "/dev/ttyS0" ]]; then
   echo "Login on $(tty), starting installer" | tee -a "${HOME}/installer.log" | sudo tee /dev/kmesg
-  screen -S potassium-installer "/usr/local/bin/potassium-installer.sh"
+  screen -L -Logfile "${HOME}/installer.screen.log" -S potassium-installer "/usr/local/bin/potassium-installer.sh"
 else
   echo "You logged in on $(tty), so we didn't start the installer for you (that only happens on tty1 and ttyS0)."
   echo "Feel free to look around, fix things, etc., and when you're ready, start the installer with"
@@ -44,7 +44,6 @@ fi
 EOF
 
 cat <<'EOF' >> /home/installer/.screenrc
-
 # Enable mouse scrolling and scroll bar history scrolling
 termcapinfo xterm* ti@:te@
 

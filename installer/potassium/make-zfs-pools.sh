@@ -28,31 +28,33 @@ function _main () {
   . "${TOP_DIR}/potassium/common.sh"
 
   _log "Selecting disks from config yaml"
-
-  ZPOOL_DISKS_STRING=$(yq '.zpool_disks[]' <<< "${INSTALLER_CONF_YAML}")
-  readarray -td, ZPOOL_DISKS <<<"$ZPOOL_DISKS_STRING,"
+  ZPOOL_DISKS_STRING=$(yq '.zpool_disks[]' <<< "${INSTALLER_CONF_YAML}" | sed 's/"//g')
+  readarray -t ZPOOL_DISKS <<< "${ZPOOL_DISKS_STRING}"
   export ZPOOL_DISKS
-
-  _log "${ZPOOL_DISKS}"
-
   _log "Selected disks for installation: ${ZPOOL_DISKS[*]}"
 
   _log "Wiping disks and creating partitions"
-  for i in "${!ZPOOL_DISKS[@]}"; do
-    sudo -E /usr/sbin/wipefs -af "${ZPOOL_DISKS[$i]}"
-    sudo -E /usr/sbin/sgdisk --zap-all "${ZPOOL_DISKS[$i]}"
-    sudo -E /usr/sbin/sgdisk -n2:1M:+512M -t2:EF00 "${ZPOOL_DISKS[$i]}"
-    sudo -E /usr/sbin/sgdisk -n3:0:+2G -t3:BF01 "${ZPOOL_DISKS[$i]}"
-    sudo -E /usr/sbin/sgdisk -n4:0:0 -t4:BF00 "${ZPOOL_DISKS[$i]}"
+  for DISK in "${ZPOOL_DISKS[@]}"; do
+    # DISK="$( echo \"${DISK}\" | sed 's/"//g' )"
+    _log "Wiping and creating partitions on ${DISK}"
+    sudo -E /usr/sbin/wipefs -af "${DISK}"
+    sudo -E /usr/sbin/sgdisk --zap-all "${DISK}"
+    sudo -E /usr/sbin/sgdisk -n2:1M:+512M -t2:EF00 "${DISK}"
+    sudo -E /usr/sbin/sgdisk -n3:0:+2G -t3:BF01 "${DISK}"
+    sudo -E /usr/sbin/sgdisk -n4:0:0 -t4:BF00 "${DISK}"
   done
 
   for i in "${!ZPOOL_DISKS[@]}"; do
-    export DISKS_PARTS_ESP[$i]="${ZPOOL_DISKS[$i]}-part2"
-    export DISKS_PARTS_BPOOL[$i]="${ZPOOL_DISKS[$i]}-part3"
-    export DISKS_PARTS_RPOOL[$i]="${ZPOOL_DISKS[$i]}-part4"
+    DISKS_PARTS_ESP[i]="${ZPOOL_DISKS[$i]}-part2"
+    DISKS_PARTS_BPOOL[i]="${ZPOOL_DISKS[$i]}-part3"
+    DISKS_PARTS_RPOOL[i]="${ZPOOL_DISKS[$i]}-part4"
   done
 
-  ZPOOL_LAYOUT=$(yq '.zpool_layout' <<< "${INSTALLER_CONF_YAML}")
+  export DISKS_PARTS_ESP
+  export DISKS_PARTS_BPOOL
+  export DISKS_PARTS_RPOOL
+
+  ZPOOL_LAYOUT=$(yq '.zpool_layout' <<< "${INSTALLER_CONF_YAML}" | sed 's/"//g')
   export ZPOOL_LAYOUT
 
   _log "Creating bpool on disks ${DISKS_PARTS_BPOOL[*]}"
@@ -68,7 +70,10 @@ function _main () {
     -O normalization=formD \
     -O relatime=on \
     -O canmount=off -O mountpoint=/boot -R /mnt \
+    -f \
     bpool "${ZPOOL_LAYOUT}" "${DISKS_PARTS_BPOOL[@]}"
+
+  _log "Creating rpool on disks ${DISKS_PARTS_RPOOL[*]}"
 
   sudo -E zpool create \
     -o ashift=12 \
@@ -78,7 +83,10 @@ function _main () {
     -O normalization=formD \
     -O relatime=on \
     -O canmount=off -O mountpoint=/ -R /mnt \
+    -f \
     rpool "${ZPOOL_LAYOUT}" "${DISKS_PARTS_RPOOL[@]}"
+  
+  _log "Creating datasets"
 
   sudo -E zfs create -o canmount=off -o mountpoint=none rpool/ROOT
   sudo -E zfs create -o canmount=off -o mountpoint=none bpool/BOOT

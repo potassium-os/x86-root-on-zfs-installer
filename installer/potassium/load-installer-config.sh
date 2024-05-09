@@ -59,9 +59,8 @@ function _main () {
 
   echo "${INSTALLER_CONF_YAML}" | tee "${HOME}/potassium-installer-config.yml" | _log
   if [ -n "${INSTALLER_CONF_YAML}" ]; then
-    _log "Loaded config sucessfully:\n\n"
+    _log "Loaded config sucessfully:"
     _log "${INSTALLER_CONF_YAML}"
-    _log "\n\n"
     export INSTALLER_CONF_YAML
   else
     _log "INSTALLER_CONF_YAML appears to be empty, cannot continue"

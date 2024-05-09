@@ -27,9 +27,23 @@ function _main () {
   # shellcheck source=common.sh
   . "${TOP_DIR}/potassium/common.sh"
 
+  sudo chroot \
+    /mnt \
+    /bin/bash -c '
+      umount -R /boot
+      cd /root
+      zfs unmount -a || true
+      cd /
+      zfs unmount -a || true
+    '
   mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | \
       xargs -i{} sudo -E umount -lf {}
-  sudo -E zpool export -a
+  sudo -E zpool export -a || true
+
+  printf '\n\n\n  Installation finished\n\n\n'
+  read -rp "  Press enter to reboot, SIGINT to exit to a shell."
+  sleep 5
+  sudo systemctl reboot
 }
 
 # Call main() to start the script

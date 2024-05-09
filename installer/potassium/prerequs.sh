@@ -40,6 +40,22 @@ function _main () {
 
   # Ensure apt/dpkg don't try to spawn a tui
   export DEBIAN_FRONTEND="noninteractive"
+
+  _log "Installing zfs-dkms"
+  
+  sudo apt-get -yq update
+
+  sudo apt-get -yq install \
+    zfs-dkms \
+    zfsutils-linux
+
+  sudo systemctl disable zfs-import-cache.service
+  sudo systemctl disable zfs-import.target
+
+  sudo systemctl stop zfs-import-cache.service
+  sudo systemctl stop zfs-import.target
+
+  sudo modprobe zfs
 }
 
 # Call main() to start the script

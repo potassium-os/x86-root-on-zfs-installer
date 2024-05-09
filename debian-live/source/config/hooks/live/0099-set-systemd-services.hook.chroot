@@ -11,6 +11,3 @@ systemctl enable generate-ssh-hostkeys.service
 systemctl enable ssh.service
 
 systemctl enable fetch-ssh-key.service
-
-systemctl disable zfs-import-cache.service
-systemctl disable zfs-import.target
