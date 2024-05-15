@@ -60,7 +60,8 @@ LOGO=$(cat <<END
   ╚════════════════════════════╝  
 
   Potassium
-  root-on-zfs installer v1.1.0-rc0
+
+  debian trixie root-on-zfs installer v1.2.0-rc0
 
 END
 )

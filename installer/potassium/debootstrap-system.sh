@@ -27,7 +27,7 @@ function _main () {
   # shellcheck source=common.sh
   . "${TOP_DIR}/potassium/common.sh"
 
-  sudo -E debootstrap bookworm /mnt
+  sudo -E debootstrap trixie /mnt
 }
 
 # Call main() to start the script
